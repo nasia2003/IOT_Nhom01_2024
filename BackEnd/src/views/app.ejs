@@ -1,0 +1,229 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IOT</title>
+    <link rel="stylesheet" href="/css/sidebar.css" />
+    <link rel="stylesheet" href="/css/sensor_data/sensor_data.css" />
+    <link rel="stylesheet" href="/css/dashboard/dashboard.css" />
+    <link rel="stylesheet" href="/css/pagination.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <!-- Link to the icon -->
+    <link rel="icon" href="/images/favicon.ico" type="image/x-icon" />
+  </head>
+  <body>
+    <div id="sidebar" class="sidebar collapsed">
+      <button id="toggleBtn" class="toggle-btn" onclick="toggleSidebar()">
+        &#8594;
+      </button>
+      <ul class="sidebar-menu">
+        <li class="sidebar-item">
+          <img
+            src="images/dashboard.png"
+            alt="Dashboard Icon"
+            class="sidebar-icon"
+          />
+          <a href="#" onclick="showSection('dashboard')">Dashboard</a>
+        </li>
+        <li class="sidebar-item">
+          <img
+            src="images/sensor.png"
+            alt="Sensor Data Icon"
+            class="sidebar-icon"
+          />
+          <a href="#" onclick="showSection('sensor-data')">Sensor Data</a>
+        </li>
+      </ul>
+    </div>
+
+    <div id="dashboard">
+      <div class="container">
+        <div class="card red" id="tp">
+          <div class="card-header">
+            <h4 id="nhietdo-h4">TEMPERATURE</h4>
+            <img
+              src="images/temperature.gif"
+              alt="Temperature"
+              class="Temperature-icon"
+            />
+          </div>
+          <div class="card-body">
+            <h2 id="nhietdo">Loading ...<span>ºC</span></h2>
+          </div>
+        </div>
+
+        <div class="card blue" id="hm">
+          <div class="card-header">
+            <h4 id="doam-h4">HUMIDITY</h4>
+            <img
+              src="images/humidity.gif"
+              alt="Humidity"
+              class="Humidity-icon"
+            />
+          </div>
+          <div class="card-body">
+            <h2 id="doam">Loading ...<span>%</span></h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-2">
+        <div class="item-2">
+          <canvas id="chartCanvas"></canvas>
+        </div>
+
+        <div class="item-3">
+          <div class="device light">
+            <img id="led" src="images/ledOff.png" alt="Led" />
+            <div class="button-container">
+              <button id="led-on" class="button-class">Turn On</button>
+              <button id="led-off" class="button-class">Turn Off</button>
+            </div>
+          </div>
+          <div class="device fan">
+            <img id="fan" src="images/fanOff.png" alt="Fan" />
+            <div class="button-container">
+              <button
+                id="fan-on"
+                class="button-class fan-button"
+                onclick="toggleFan('on')"
+              >
+                Turn On
+              </button>
+              <button
+                id="fan-off"
+                class="button-class fan-button active"
+                onclick="toggleFan('off')"
+              >
+                Turn Off
+              </button>
+              <button
+                id="fan-auto"
+                class="button-class fan-button"
+                onclick="toggleFan('auto')"
+              >
+                Auto
+              </button>
+            </div>
+          </div>
+          <div class="device air-conditioner">
+            <img id="ac" src="images/acOff.png" alt="Air-conditioner" />
+            <div id="ac-temp" style="display: none">
+              Nhiệt độ: <span id="ac-temp-value">25</span>°C
+              <button
+                id="increase-temp"
+                class="temp-button"
+                style="width: 40px"
+              >
+                +
+              </button>
+              <button
+                id="decrease-temp"
+                class="temp-button"
+                style="width: 40px"
+              >
+                -
+              </button>
+            </div>
+            <div class="button-container">
+              <button
+                id="ac-on"
+                class="button-class ac-button"
+                onclick="toggleAC('on')"
+              >
+                Turn On
+              </button>
+              <button
+                id="ac-off"
+                class="button-class ac-button active"
+                onclick="toggleAC('off')"
+              >
+                Turn Off
+              </button>
+              <button
+                id="ac-auto"
+                class="button-class ac-button"
+                onclick="toggleAC('auto')"
+              >
+                Auto
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="sensor-data" style="display: none">
+      <div class="sensor-header">
+        <h1>SENSOR HISTORY</h1>
+      </div>
+
+      <div class="search-controls">
+        <div class="search-section">
+          <label for="selectSearch">SEARCH BY:</label>
+          <select id="selectSearch">
+            <option value="all">All</option>
+            <option value="id">ID</option>
+            <option value="humidity">Humidity</option>
+            <option value="temperature">Temperature</option>
+            <option value="time">Time</option>
+          </select>
+          <input
+            type="text"
+            id="inputSensor"
+            placeholder="Enter search term..."
+          />
+        </div>
+        <div class="search-button">
+          <button id="btnSearchAll">SEARCH</button>
+        </div>
+      </div>
+
+      <div class="sort-controls">
+        <div class="sort-section">
+          <label for="selectSensor">SORT BY:</label>
+          <select id="selectSensor">
+            <option value="id">ID</option>
+            <option value="humidity">Humidity</option>
+            <option value="temperature">Temperature</option>
+            <!-- <option value="light">Light</option> -->
+            <option value="time">Time</option>
+          </select>
+          <button id="SU">ASC</button>
+          <button id="SD">DESC</button>
+        </div>
+      </div>
+
+      <div class="table-container">
+        <table id="sensor_table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Humidity (%)</th>
+              <th>Temperature (ºC)</th>
+              <th>Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Sensor data rows will be dynamically generated here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination">
+        <div></div>
+        <button id="page-back-sensor">Back</button>
+        <select id="page-selector-sensor"></select>
+        <button id="page-next-sensor">Next</button>
+        <input type="number" id="limit-input-sensor" min="1" value="8" />
+      </div>
+    </div>
+
+    <script src="/js/sidebar.js"></script>
+    <script src="/js/dashboard/devices.js"></script>
+    <script src="/js/dashboard/chart.js"></script>
+    <script src="/js/sensor_data/sensor_data.js"></script>
+  </body>
+</html>

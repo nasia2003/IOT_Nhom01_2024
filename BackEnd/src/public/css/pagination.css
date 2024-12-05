@@ -1,0 +1,159 @@
+/* Pagination Styles */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.pagination button,
+.pagination select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    background-color: #1da1f2;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.pagination button:hover,
+.pagination select:hover {
+    background-color: #ddd;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .search-controls, .sort-controls {
+        flex-direction: column;
+    }
+
+    .search-controls > div, .sort-controls > div {
+        margin-bottom: 10px;
+    }
+
+    input[type="text"], select {
+        width: 100%;
+    }
+}
+/* Time Section Styles */
+
+.time-section label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.time-section input[type="date"] {
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 150px; /* Adjust as needed */
+}
+
+.time-section span {
+    font-size: 18px;
+    margin: 0 10px; /* Space around the arrow */
+}
+
+#nhietdo-h4 {
+    margin-left: 70px;
+}
+
+#doam-h4 {
+    margin-left: 100px;
+}
+#anhsang-h4 {
+    margin-left: 120px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px 0;
+}
+
+.pagination button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.pagination button:hover {
+    background-color: #0056b3;
+}
+
+.pagination button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+.pagination select {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    background-color: white;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+}
+
+.pagination select:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.pagination input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    text-align: center;
+    transition: border-color 0.3s ease;
+}
+
+.pagination input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+.pagination button,
+.pagination input[type="number"] {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pagination button#page-back-sensor {
+    width: 80px;
+    margin-left: 410px;
+}
+
+.pagination button#page-back-action {
+    width: 80px;
+    margin-left: 420px;
+}
+
+.pagination button#page-next-sensor,.pagination button#page-next-action {
+    width: 80px;
+}
+
+.pagination #limit-input-sensor,.pagination #limit-input-action {
+    margin-left: auto;
+}
+
+.pagination #page-selector-sensor,.pagination #page-selector-action {
+    flex: 1;
+    margin: 0 10px;
+    max-width: 200px;
+}

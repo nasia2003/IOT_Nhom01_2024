@@ -1,0 +1,96 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+}
+
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 220px;
+  height: 100%;
+  background-color: rgba(44, 62, 80, 0.8); /* Semi-transparent background */
+  color: white;
+  transition: width 0.3s ease;
+  overflow-x: hidden;
+  z-index: 1000; /* Ensure it's above other content */
+}
+
+.sidebar.collapsed {
+  width: 60px;
+}
+
+.sidebar-menu {
+  list-style-type: none;
+  padding: 0;
+  margin: 20px 0 0 0;
+}
+
+.sidebar-item {
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar-item:hover {
+  background-color: rgba(52, 73, 94, 0.9); /* Slightly more opaque on hover */
+}
+
+.sidebar-icon {
+  width: 24px;
+  height: 24px;
+  margin-right: 15px;
+}
+
+.sidebar a {
+  text-decoration: none;
+  color: white;
+  font-size: 1em;
+  flex: 1;
+}
+
+.sidebar a:hover {
+  color: #bdc3c7;
+}
+
+.toggle-btn {
+  background-color: rgba(26, 37, 47, 0.8); /* Semi-transparent button */
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 10px;
+  width: 100%;
+  text-align: center; /* Center align the text */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.toggle-btn:focus {
+  outline: none;
+}
+
+/* Arrows and text based on state */
+.toggle-btn.collapsed:before {
+  content: "\2190"; /* Left arrow (←) when collapsed */
+}
+
+.toggle-btn.expanded {
+  justify-content: center;
+  font-size: 18px;
+}
+
+.toggle-btn.expanded:before {
+  content: ""; /* No content when expanded */
+}
+
+.container {
+  margin-left: 240px;
+  padding: 20px;
+  transition: margin-left 0.3s ease;
+}
+
+

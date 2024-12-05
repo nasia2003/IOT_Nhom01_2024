@@ -1,0 +1,31 @@
+{
+  "name": "iot",
+  "version": "1.0.0",
+  "description": "Bài tập IOT",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon ./src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeTuan93/IOT.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LeTuan93/IOT/issues"
+  },
+  "homepage": "https://github.com/LeTuan93/IOT#readme",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "ejs": "3.1.10",
+    "express": "4.19.2",
+    "mqtt": "^5.10.1",
+    "mysql2": "3.11.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "nodemon": "3.1.4"
+  }
+}

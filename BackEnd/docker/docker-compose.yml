@@ -1,0 +1,13 @@
+# docker-compose.yml
+version: "3"
+
+services:
+  app:
+    build: .
+    ports:
+      - "1883:1883" # Cổng mặc định
+      - "9001:9001" # Cổng WebSocket
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - NODE_ENV=development
