@@ -7,9 +7,12 @@ import os
 from apscheduler.schedulers.background import BackgroundScheduler
 import pymysql  # Thư viện kết nối MySQL
 import datetime
+from flask_cors import CORS
 
 # Khởi tạo Flask app
 app = Flask(__name__)
+
+CORS(app)
 
 # Đường dẫn lưu mô hình
 AC_MODEL_PATH = "ac_model.pkl"
@@ -100,7 +103,7 @@ def predict_ac():
         predicted_temp = ac_model.predict(features)[0]
 
         return jsonify({
-            "predicted_ac_temperature": round(predicted_temp, 2)
+            "predicted_ac_temperature": int(predicted_temp)
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500

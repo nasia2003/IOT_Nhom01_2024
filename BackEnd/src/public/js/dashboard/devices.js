@@ -51,19 +51,19 @@ function toggleLed(state) {
 
   if (state === "on") {
     ledImg.src = "images/ledOn.png";
-    ledButtonOn.classList.remove("active");
-    ledButtonOff.classList.add("active");
+    ledButtonOn.classList.add("active");
+    ledButtonOff.classList.remove("active");
     saveStateToLocalStorage("led", "on");
   } else {
     ledImg.src = "images/ledOff.png";
-    ledButtonOff.classList.remove("active");
-    ledButtonOn.classList.add("active");
+    ledButtonOff.classList.add("active");
+    ledButtonOn.classList.remove("active");
     saveStateToLocalStorage("led", "off");
   }
 }
 
 // Function to handle Fan button clicks
-function toggleFan(state) {
+async function toggleFan(state) {
   // const fanButtonOn = document.querySelector("#fan-on");
   // const fanButtonOff = document.querySelector("#fan-off");
   const fanImg = document.getElementById("fan");
@@ -85,22 +85,22 @@ function toggleFan(state) {
       humidity: latestData.humidity,
     };
 
-    fetch("http://127.0.0.1:5000/predict/fan", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(filteredData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        now = data.predicted_fan_status; // Gán giá trị từ API vào biến now
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
+    try {
+      // Sử dụng await để đợi fetch hoàn tất
+      const response = await fetch("http://127.0.0.1:5000/predict/fan", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(filteredData),
       });
+      const data = await response.json();
+      now = data.predicted_fan_status; // Gán giá trị từ API vào biến now
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   } else {
-    now = state;
+    now = state; // Nếu không phải "auto", lấy giá trị từ state
   }
 
   if (now === "on") {
@@ -119,7 +119,7 @@ function toggleFan(state) {
 }
 
 // Function to handle Air Conditioner button clicks
-function toggleAC(state) {
+async function toggleAC(state) {
   // const acButtonOn = document.querySelector("#ac-on");
   // const acButtonOff = document.querySelector("#ac-off");
   const acImg = document.getElementById("ac");
@@ -143,23 +143,25 @@ function toggleAC(state) {
       humidity: latestData.humidity,
     };
 
-    fetch("http://127.0.0.1:5000/predict/ac", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(filteredData),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        now = "on";
-        currentTemp = data.predicted_ac_temperature;
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
+    try {
+      // Sử dụng await để đợi fetch hoàn tất
+      const response = await fetch("http://127.0.0.1:5000/predict/ac", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(filteredData),
       });
+
+      const data = await response.json();
+      now = "on"; // Gán trạng thái điều hòa
+      currentTemp = data.predicted_ac_temperature; // Gán nhiệt độ từ API
+      console.log(currentTemp);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   } else {
-    now = state;
+    now = state; // Nếu không phải "auto", lấy giá trị từ state
   }
 
   if (now === "on") {
@@ -180,18 +182,6 @@ function toggleAC(state) {
   }
   sendMQTTMessage("home/devices/dieuhoa", String(currentTemp));
 }
-
-// Update functions for the state restoration
-// function restoreDeviceState() {
-//   const fanState = loadStateFromLocalStorage("fan");
-//   toggleFan(fanState === "on" ? "on" : "off");
-
-//   const acState = loadStateFromLocalStorage("ac");
-//   toggleAC(acState === "on" ? "on" : "off");
-// }
-
-// Call the restore function when the page loads
-// window.onload = restoreDeviceState;
 
 // Function to update colors based on values
 function updateColor(elementId, value, minValue, maxValue, baseHue) {
@@ -214,7 +204,7 @@ document.getElementById("increase-temp").addEventListener("click", () => {
     // Giới hạn tối đa 30°C
     currentTemp++;
     updateTemperatureDisplay();
-    sendMQTTMessage("home/devices/dieuhoa", `SET_TEMP_${currentTemp}`);
+    sendMQTTMessage("home/devices/dieuhoa", String(currentTemp));
   }
 });
 
@@ -223,7 +213,7 @@ document.getElementById("decrease-temp").addEventListener("click", () => {
     // Giới hạn tối thiểu 16°C
     currentTemp--;
     updateTemperatureDisplay();
-    sendMQTTMessage("home/devices/dieuhoa", `SET_TEMP_${currentTemp}`);
+    sendMQTTMessage("home/devices/dieuhoa", String(currentTemp));
   }
 });
 

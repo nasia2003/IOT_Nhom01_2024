@@ -11,10 +11,10 @@ DHT dht(DHTPIN, DHTTYPE);
 const int led = 25;    // Chuyển relay sang GPIO13 hoặc chân khác có thể output
 const int pirIn = 27;    // GPIO35 - input only
 const int pirOut = 26;   // GPIO34 - input only
-const int AC = 23;  
+const int AC = 33;  
 const int fan = 32;  
 int entered = 0;
-String fan_status = "OFF";
+int fan_status = 0;
 int ac_temperature = 0;
 
 int segmentPins[] = {5, 18, 19, 21, 22, 23, 13}; // Chân a, b, c, d, e, f, g
@@ -95,12 +95,12 @@ void callback(char* topic, byte* payload, unsigned int length)
   // Xử lý điều khiển quạt
   if (strcmp(topic, "home/devices/quat") == 0) {
     if (message == "ON") {
-      fan_status = "ON";
+      fan_status = 1;
       digitalWrite(fan, HIGH);                       // Bật quạt
       client.publish("home/devices/quat/status", "ON");    // Gửi trạng thái
       Serial.println("Fan turned ON");
     } else if (message == "OFF") {
-      fan_status = "OFF";
+      fan_status = 0;
       digitalWrite(fan, LOW);                       // Tắt quạt
       client.publish("home/devices/quat/status", "OFF");   // Gửi trạng thái
       Serial.println("Fan turned OFF");
@@ -133,14 +133,6 @@ void setup()
   
   // Kết nối WiFi
   setup_wifi();
-
-  WiFiClient testClient;
-  if (testClient.connect("192.168.1.34", 1883)) {
-    Serial.println("Broker is reachable!");
-    testClient.stop();
-  } else {
-    Serial.println("Cannot reach broker. Check IP or port.");
-  }
 
   client.setServer(mqtt_server, 1883);    // Cấu hình MQTT broker và port
   client.setCallback(callback);
@@ -176,7 +168,7 @@ void displayDigit(int digit, int num) {
 
 // Định nghĩa các mảng previousMillis và interval cho các cảm biến và dữ liệu
 unsigned long previousMillis[4];  // Mảng lưu thời gian cho các cảm biến và payload
-long interval[4] = {1500, 1500, 5, 2000};  // Mảng interval cho từng tác vụ
+long interval[4] = {1500, 1500, 5, 5000};  // Mảng interval cho từng tác vụ
 
 // Định nghĩa các chỉ số cho từng mảng previousMillis và interval
 const int pirInIndex = 0;
@@ -185,6 +177,11 @@ const int ledDisplayIndex = 2;
 const int payloadIndex = 3;
 
 void loop() {
+
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
   unsigned long currentMillis = millis();  // Lấy thời gian hiện tại
 
   // Kiểm tra thời gian đã đủ để xử lý pirIn (1.5s)

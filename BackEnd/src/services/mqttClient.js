@@ -49,10 +49,17 @@ client.on("message", (topic, message) => {
 
       // Save sensor data to the database
       const query =
-        "INSERT INTO devices (humidity, temperature, light, fan_status, ac_temperature, time) VALUES (?, ?, ?, ?)";
+        "INSERT INTO devices (humidity, temperature, light, fan_status, ac_temperature, time) VALUES (?, ?, ?, ?, ?, ?)";
       connection.query(
         query,
-        [data.humidity, data.temperature, data.light, now],
+        [
+          data.humidity,
+          data.temperature,
+          data.light,
+          data.fan_status,
+          data.ac_temperature,
+          now,
+        ],
         (err) => {
           if (err) {
             console.error("Database insert error:", err);
